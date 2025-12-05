@@ -1,0 +1,221 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Happy Birthday — Envelope Surprise</title>
+  <style>
+    :root{
+      --bg:#f7efe9;
+      --accent:#f05454;
+      --card:#ffffff;
+      --shadow: rgba(0,0,0,0.12);
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,#fff 0%, #f7efe9 100%);display:flex;align-items:center;justify-content:center}
+    .wrap{width:950px;max-width:96vw;height:620px;max-height:92vh;position:relative;overflow:hidden;border-radius:16px;box-shadow:0 18px 40px var(--shadow);background:var(--bg);display:flex;align-items:center;justify-content:center}
+
+    /* Pages container */
+    .pages{width:100%;height:100%;position:relative}
+    .page{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column;padding:28px;transition:opacity .5s ease,transform .5s ease;}
+    .page.hidden{opacity:0;pointer-events:none;transform:translateX(20px)}
+
+    /* Envelope (first page) */
+    .envelope-scene{width:520px;max-width:80%;height:340px;position:relative;perspective:1000px}
+    .envelope{width:100%;height:100%;position:relative;transform-style:preserve-3d}
+
+    /* Back of envelope */
+    .env-back{position:absolute;inset:0;background:linear-gradient(180deg,#fff,#ffe9e9);border-radius:10px;border:2px solid rgba(0,0,0,0.06);box-shadow:0 8px 20px rgba(0,0,0,0.08) inset}
+
+    /* flap */
+    .flap{position:absolute;left:0;right:0;top:0;height:55%;background:linear-gradient(180deg,#fffbfb,#ffdede);border-top-left-radius:10px;border-top-right-radius:10px;transform-origin:top center;transition:transform .9s cubic-bezier(.2,.9,.2,1);box-shadow:0 10px 20px rgba(0,0,0,0.06)}
+    .env-open .flap{transform:rotateX(-180deg)}
+
+    /* inner card peeking */
+    .card{position:absolute;left:10%;right:10%;top:12%;bottom:12%;background:var(--card);border-radius:8px;display:flex;align-items:center;justify-content:center;box-shadow:0 10px 30px rgba(0,0,0,0.08);transform:translateY(12%);transition:transform .7s ease,opacity .6s;opacity:0}
+    .env-open .card{transform:translateY(0);opacity:1}
+
+    .card h1{font-size:36px;margin:0;color:#d4445a;letter-spacing:1px}
+
+    /* tap hint */
+    .hint{margin-top:18px;color:#666;font-size:14px}
+    .nav-right{position:absolute;right:18px;bottom:18px;background:rgba(255,255,255,0.95);border-radius:999px;padding:12px 14px;box-shadow:0 8px 20px rgba(0,0,0,0.08);cursor:pointer;border:1px solid rgba(0,0,0,0.04)}
+
+    /* Gallery page */
+    .gallery{display:flex;gap:18px;align-items:center;justify-content:center}
+    .polaroid{width:180px;height:210px;background:#fff;border-radius:6px;padding:12px;box-shadow:0 12px 30px rgba(0,0,0,0.12);transform-origin:center;opacity:0;transform:scale(0.4) rotate(-12deg);transition:transform .6s cubic-bezier(.2,.9,.2,1),opacity .4s}
+    .polaroid img{width:100%;height:140px;object-fit:cover;border-radius:3px}
+    .polaroid .cap{margin-top:10px;text-align:center;font-size:14px;color:#333}
+
+    .polaroid.pop{opacity:1;transform:scale(1) rotate(0deg)}
+    .polaroid.p2{transform:scale(0.95) rotate(6deg)}
+    .polaroid.p3{transform:scale(0.98) rotate(-6deg)}
+
+    .gallery .desc{max-width:420px;text-align:center;margin-top:18px;color:#444}
+
+    /* Last page — wishes */
+    .wish-card{background:linear-gradient(180deg,#fff,#fff9f2);padding:28px;border-radius:12px;box-shadow:0 20px 40px rgba(0,0,0,0.08);text-align:center}
+    .wish-card h2{font-size:36px;margin:6px 0 12px;color:#d4445a}
+    .wish-card p{font-size:18px;color:#333;line-height:1.5;margin:0}
+
+    /* Responsive tweaks */
+    @media(max-width:640px){
+      .envelope-scene{height:300px}
+      .card h1{font-size:28px}
+      .polaroid{width:130px;height:170px}
+    }
+
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="pages">
+      <!-- Page 1: Envelope -->
+      <section class="page" id="page-1">
+        <div class="envelope-scene" id="envelopeScene">
+          <div class="envelope" id="envelope">
+            <div class="env-back"></div>
+            <div class="flap" id="flap"></div>
+            <div class="card" id="card">
+              <h1>Happy Birthday, Keerthu ♥💗😘🎉</h1>
+            </div>
+          </div>
+        </div>
+        <div class="hint">Tap the envelope to open • Swipe or click the arrow to go next</div>
+        <button class="nav-right" id="toGallery" title="Next">›</button>
+      </section>
+
+      <!-- Page 2: Gallery / Polaroids -->
+      <section class="page hidden" id="page-2">
+        <h2 style="margin-top:8px;color:#d4445a">Album</h2>
+        <div class="gallery">
+          <div class="polaroid p1" id="p1">
+            <!-- Replace src with your real photos in "images/" folder -->
+            <img src="WhatsApp Image 2025-12-04 at 21.38.22_2a211222.jpg" alt="photo 1" />
+            <div class="cap">Alaghi😘</div>
+          </div>
+          <div class="polaroid p2" id="p2">
+            <img src="WhatsApp Image 2025-12-04 at 21.37.22_30bdb8e0.jpg" alt="photo 2" />
+            <div class="cap">Date</div>
+          </div>
+          <div class="polaroid p3" id="p3">
+            <img src="WhatsApp Image 2025-12-04 at 21.37.22_f84b4532.jpg" alt="photo 3" />
+            <div class="cap">😁</div>
+          </div>
+        </div>
+        <div class="desc">Tap each picture to pop it — then tap the arrow to move to the final wish.</div>
+        <div style="position:absolute;right:18px;bottom:18px"><button class="nav-right" id="toWish">›</button></div>
+      </section>
+
+      <!-- Page 3: Full wish + music -->
+      <section class="page hidden" id="page-3">
+        <div class="wish-card">
+          <h2>Happy Birthday, Keerthana! 🥳</h2>
+          <p>
+            Stay blessed diii 💗.. I wish all your dreams come true. Stay happy eruma forever. Eppovum santhosama  iru diii . Love you soo much diii 💗😘🫂— <strong>Nishanth</strong>
+          </p>
+          <div style="margin-top:18px;font-size:14px;color:#666">Tap the play button below to listen to your song.</div>
+          <div style="margin-top:12px">
+            <button id="playSong" class="nav-right" style="border-radius:8px;padding:8px 12px">Play ♫</button>
+          </div>
+        </div>
+
+        <!-- Audio: replace src with your chosen mp3. If hosting locally, put in same folder or images/ -->
+        <audio id="song" src="happy-birthday-254480.mp3" preload="auto"></audio>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    // Simple page manager
+    const pages = [document.getElementById('page-1'), document.getElementById('page-2'), document.getElementById('page-3')];
+    let current = 0;
+    function showPage(i){
+      pages.forEach((p, idx)=>{
+        if(idx===i){p.classList.remove('hidden')} else {p.classList.add('hidden')}
+      });
+      current=i;
+    }
+
+    // Envelope open interaction
+    const envelope = document.getElementById('envelope');
+    const flap = document.getElementById('flap');
+    const card = document.getElementById('card');
+    const envelopeScene = document.getElementById('envelopeScene');
+    envelopeScene.addEventListener('click', ()=>{
+      envelope.classList.add('env-open');
+    });
+
+    // Next buttons
+    document.getElementById('toGallery').addEventListener('click', ()=>{
+      // if envelope hasn't opened, open first
+      envelope.classList.add('env-open');
+      setTimeout(()=>showPage(1), 700);
+    });
+    document.getElementById('toWish').addEventListener('click', ()=>{showPage(2);});
+
+    // Polaroid pop animation on tap/click
+    const p1 = document.getElementById('p1');
+    const p2 = document.getElementById('p2');
+    const p3 = document.getElementById('p3');
+    [p1,p2,p3].forEach((el)=>{
+      el.addEventListener('click', ()=>{
+        el.classList.toggle('pop');
+      })
+    });
+
+    // When entering gallery, stagger-pop the photos for a playful entrance
+    const observer = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{
+        if(e.isIntersecting && e.target.id==='page-2'){
+          setTimeout(()=>p1.classList.add('pop'),120);
+          setTimeout(()=>p2.classList.add('pop'),300);
+          setTimeout(()=>p3.classList.add('pop'),480);
+        }
+      })
+    },{threshold:0.4});
+    observer.observe(document.getElementById('page-2'));
+
+    // Song controls
+    const song = document.getElementById('song');
+    const playBtn = document.getElementById('playSong');
+    playBtn.addEventListener('click', ()=>{
+      if(song.paused){
+        song.play();
+        playBtn.textContent='Pause ▮▮';
+      } else { song.pause(); playBtn.textContent='Play ♫'; }
+    });
+
+    // keyboard navigation (right arrow)
+    window.addEventListener('keydown', (e)=>{
+      if(e.key==='ArrowRight'){
+        if(current<pages.length-1) showPage(current+1);
+      } else if(e.key==='ArrowLeft'){
+        if(current>0) showPage(current-1);
+      }
+    })
+
+    // Swipe support (very small but usable)
+    let startX=null;
+    window.addEventListener('touchstart', (ev)=>{startX=ev.changedTouches[0].clientX});
+    window.addEventListener('touchend', (ev)=>{
+      if(startX===null) return;
+      const dx = ev.changedTouches[0].clientX - startX;
+      if(dx<-60 && current<pages.length-1) showPage(current+1);
+      if(dx>60 && current>0) showPage(current-1);
+      startX=null;
+    });
+
+    // Small accessibility: announce current page title to console for debugging
+    function announce(){
+      console.log('Showing page', current+1);
+    }
+    setInterval(announce,5000);
+
+    // Initial page show
+    showPage(0);
+
+  </script>
+</body>
+</html>
